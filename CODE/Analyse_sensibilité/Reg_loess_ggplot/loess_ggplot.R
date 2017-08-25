@@ -1,0 +1,117 @@
+library(ggplot2)
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+## load from data_ref file
+# t=2
+data_beta2=read.table("data_beta_t2.csv",header=TRUE,sep=",")
+data_delta2=read.table("data_delta_t2.csv",header=TRUE,sep=",")
+data_p2=read.table("data_p_t2.csv",header=TRUE,sep=",")
+data_c2=read.table("data_c_t2.csv",header=TRUE,sep=",")
+data_mu2=read.table("data_mu_t2.csv",header=TRUE,sep=",")
+data_gamma12=read.table("data_gamma1_t2.csv",header=TRUE,sep=",")
+data_gamma22=read.table("data_gamma2_t2.csv",header=TRUE,sep=",")
+# t=2.5
+data_beta25=read.table("data_beta_t25.csv",header=TRUE,sep=",")
+data_delta25=read.table("data_delta_t25.csv",header=TRUE,sep=",")
+data_p25=read.table("data_p_t25.csv",header=TRUE,sep=",")
+data_c25=read.table("data_c_t25.csv",header=TRUE,sep=",")
+data_mu25=read.table("data_mu_t25.csv",header=TRUE,sep=",")
+data_gamma125=read.table("data_gamma1_t25.csv",header=TRUE,sep=",")
+data_gamma225=read.table("data_gamma2_t25.csv",header=TRUE,sep=",")
+# t=3
+data_beta3=read.table("data_beta_t3.csv",header=TRUE,sep=",")
+data_delta3=read.table("data_delta_t3.csv",header=TRUE,sep=",")
+data_p3=read.table("data_p_t3.csv",header=TRUE,sep=",")
+data_c3=read.table("data_c_t3.csv",header=TRUE,sep=",")
+data_mu3=read.table("data_mu_t3.csv",header=TRUE,sep=",")
+data_gamma13=read.table("data_gamma1_t3.csv",header=TRUE,sep=",")
+data_gamma23=read.table("data_gamma2_t3.csv",header=TRUE,sep=",")
+# t=15
+data_beta15=read.table("data_beta_t15.csv",header=TRUE,sep=",")
+data_delta15=read.table("data_delta_t15.csv",header=TRUE,sep=",")
+data_p15=read.table("data_p_t15.csv",header=TRUE,sep=",")
+data_c15=read.table("data_c_t15.csv",header=TRUE,sep=",")
+data_mu15=read.table("data_mu_t15.csv",header=TRUE,sep=",")
+data_gamma115=read.table("data_gamma1_t15.csv",header=TRUE,sep=",")
+data_gamma215=read.table("data_gamma2_t15.csv",header=TRUE,sep=",")
+
+Graph_loess=function(data,main){
+  par=data[,2]
+  div=data[,3]
+  newdata=data.frame(par,div)
+  pl=ggplot(data=newdata, aes(x=par,y=div))+geom_point(size=2,shape=1) + theme_classic() 
+  pl=pl+ stat_smooth(method="loess",colour="green3",fill="green")
+  pl=pl+ggtitle(main)+xlab("Parameter")+ylab("p-distance")
+  return(pl)
+}
+
+# t=2
+t1=Graph_loess(data_beta2,"beta, t=2")
+t2=Graph_loess(data_delta2,"delta, t=2")
+t3=Graph_loess(data_p2,"p, t=2")
+t4=Graph_loess(data_c2,"c, t=2")
+t5=Graph_loess(data_mu2,"mu, t=2")
+t6=Graph_loess(data_gamma12, "gamma1, t=2")
+t7=Graph_loess(data_gamma22,"gamma2, t=2")
+multiplot(t1,t2,t3,t4,t5,t6,t7,cols=3)
+# t=2.5
+t8=Graph_loess(data_beta2,"beta, t=2.5")
+t9=Graph_loess(data_delta2,"delta, t=2.5")
+t10=Graph_loess(data_p2,"p, t=2.5")
+t11=Graph_loess(data_c2,"c, t=2.5")
+t12=Graph_loess(data_mu2,"mu, t=2.5")
+t13=Graph_loess(data_gamma12, "gamma1, t=2.5")
+t14=Graph_loess(data_gamma22,"gamma2, t=2.5")
+multiplot(t8,t9,t10,t11,t12,t13,t14,cols=3)
+# t=3
+t15=Graph_loess(data_beta2,"beta, t=3")
+t16=Graph_loess(data_delta2,"delta, t=3")
+t17=Graph_loess(data_p2,"p, t=3")
+t18=Graph_loess(data_c2,"c, t=3")
+t19=Graph_loess(data_mu2,"mu, t=3")
+t20=Graph_loess(data_gamma12, "gamma1, t=3")
+t21=Graph_loess(data_gamma22,"gamma2, t=3")
+multiplot(t15,t16,t17,t18,t19,t20,t21,cols=3)
+# t=15
+t22=Graph_loess(data_beta2,"beta, t=15")
+t23=Graph_loess(data_delta2,"delta, t=15")
+t24=Graph_loess(data_p2,"p, t=15")
+t25=Graph_loess(data_c2,"c, t=15")
+t26=Graph_loess(data_mu2,"mu, t=15")
+t27=Graph_loess(data_gamma12, "gamma1, t=15")
+t28=Graph_loess(data_gamma22,"gamma2, t=15")
+multiplot(t22,t23,t24,t25,t26,t27,t28,cols=3)
